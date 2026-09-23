@@ -3,3 +3,6 @@
 *.exe
 .DS_Store
 .zed/
+frontend/node_modules/
+frontend/dist/
+frontend/.lovable/

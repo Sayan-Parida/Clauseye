@@ -14,6 +14,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/taoq-ai/wuming"
 )
 
 const jevURL = "https://ai-gateway.vercel.sh/v1/evaluate"
@@ -37,6 +39,7 @@ type server struct {
 	apiKey string
 	client *http.Client
 	limit  *rateLimiter
+	daily  *dailyCap
 }
 
 type clientWindow struct {
@@ -60,11 +63,37 @@ func (r *rateLimiter) allow(ip string) bool {
 		r.clients[ip] = clientWindow{started: now, count: 1}
 		return true
 	}
-	if w.count >= 10 {
+	if w.count >= 3 {
 		return false
 	}
 	w.count++
 	r.clients[ip] = w
+	return true
+}
+
+type dailyCap struct {
+	mu    sync.Mutex
+	day   time.Time
+	count int
+	max   int
+}
+
+func newDailyCap(max int) *dailyCap {
+	return &dailyCap{day: time.Now(), max: max}
+}
+
+func (d *dailyCap) allow() bool {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	now := time.Now()
+	if now.Sub(d.day) >= 24*time.Hour {
+		d.day = now
+		d.count = 0
+	}
+	if d.count >= d.max {
+		return false
+	}
+	d.count++
 	return true
 }
 
@@ -78,6 +107,7 @@ func main() {
 		apiKey: apiKey,
 		client: &http.Client{},
 		limit:  newRateLimiter(),
+		daily:  newDailyCap(500),
 	}
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /health", s.health)
@@ -104,6 +134,10 @@ func (s *server) analyze(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusTooManyRequests, "rate limit exceeded; try again in a minute")
 		return
 	}
+	if !s.daily.allow() {
+		writeError(w, http.StatusTooManyRequests, "daily limit reached; try again tomorrow")
+		return
+	}
 	if s.apiKey == "" {
 		writeError(w, http.StatusServiceUnavailable, "analysis service is not configured")
 		return
@@ -123,13 +157,27 @@ func (s *server) analyze(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, "at most 50 clauses are allowed per request")
 		return
 	}
+	for i, clause := range input.Clauses {
+		if len(strings.TrimSpace(clause)) < 20 {
+			writeError(w, http.StatusBadRequest, fmt.Sprintf("clause %d is too short to analyze", i+1))
+			return
+		}
+	}
+	allText := strings.ToLower(strings.Join(input.Clauses, " "))
+	legalTerms := []string{"shall", "agreement", "party", "clause", "indemnify", "terminate", "liability", "jurisdiction", "obligation"}
+	matches := 0
+	for _, term := range legalTerms {
+		if strings.Contains(allText, term) {
+			matches++
+		}
+	}
+	if matches < 2 {
+		writeError(w, http.StatusBadRequest, "this does not appear to be a legal contract")
+		return
+	}
 
 	results := make([]analysisResult, 0, len(input.Clauses))
 	for i, clause := range input.Clauses {
-		if strings.TrimSpace(clause) == "" {
-			writeError(w, http.StatusBadRequest, fmt.Sprintf("clause %d is empty", i+1))
-			return
-		}
 		result, err := s.assess(clause)
 		if err != nil {
 			log.Printf("analysis failed for clause %d: %v", i+1, err)
@@ -142,9 +190,15 @@ func (s *server) analyze(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *server) assess(clause string) (analysisResult, error) {
+	anonymizedClause, err := wuming.Redact(context.Background(), clause)
+	if err != nil {
+		return analysisResult{}, fmt.Errorf("redact clause: %w", err)
+	}
+	log.Printf("Anonymized clause: %s", anonymizedClause)
+
 	payload := map[string]any{
 		"model": "typesafe-ai/jev",
-		"state": clause,
+		"state": anonymizedClause,
 		"questions": map[string]any{
 			"risk_level": map[string]any{
 				"type":         "score",
