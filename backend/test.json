@@ -1,0 +1,1 @@
+{"model":"typesafe-ai/jev","state":"The Vendor shall indemnify the Client against all claims without limitation.","questions":{"risk_level":{"type":"score","instructions":"Assess the legal risk.","criteria":["low","medium","high","critical"]}}}
