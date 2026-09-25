@@ -1,0 +1,24 @@
+FROM python:3.11-slim-bookworm
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    USE_TF=0 \
+    USE_TORCH=1 \
+    TOKENIZERS_PARALLELISM=false \
+    LAYA_DEVICE=cpu \
+    LAYA_PRELOAD=1 \
+    HF_HOME=/home/laya/.cache/huggingface
+
+RUN groupadd --gid 10001 laya \
+    && useradd --uid 10001 --gid laya --create-home laya \
+    && mkdir -p /home/laya/.cache/huggingface \
+    && chown -R laya:laya /home/laya/.cache
+
+WORKDIR /app
+COPY laya_requirements.txt .
+RUN python -m pip install --no-cache-dir -r laya_requirements.txt
+COPY laya_adapter.py .
+
+USER laya
+EXPOSE 8000
+CMD ["uvicorn", "laya_adapter:app", "--host", "0.0.0.0", "--port", "8000"]

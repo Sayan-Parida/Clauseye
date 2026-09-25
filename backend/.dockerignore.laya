@@ -1,0 +1,4 @@
+.venv-laya
+__pycache__
+*.pyc
+.git

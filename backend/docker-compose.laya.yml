@@ -1,0 +1,18 @@
+services:
+  laya-adapter:
+    build:
+      context: .
+      dockerfile: Dockerfile.laya
+    ports:
+      - "8000:8000"
+    environment:
+      LAYA_MODEL: ${LAYA_MODEL:-english}
+      LAYA_MODEL_PATH: ${LAYA_MODEL_PATH:-}
+      LAYA_DEVICE: ${LAYA_DEVICE:-cpu}
+      LAYA_BATCH_SIZE: ${LAYA_BATCH_SIZE:-50}
+      HF_HOME: /home/laya/.cache/huggingface
+    volumes:
+      - laya-hf-cache:/home/laya/.cache/huggingface
+
+volumes:
+  laya-hf-cache:
