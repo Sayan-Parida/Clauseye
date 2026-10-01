@@ -11,7 +11,12 @@ const styles: Record<Risk, string> = {
 
 export function RiskBadge({ risk }: { risk: Risk }) {
   return (
-    <span className={cn("inline-flex min-w-16 items-center justify-center rounded-full px-2.5 py-1 text-xs font-semibold", styles[risk])}>
+    <span
+      className={cn(
+        "inline-flex min-w-16 items-center justify-center rounded-full px-2.5 py-1 text-xs font-semibold",
+        styles[risk],
+      )}
+    >
       {risk}
     </span>
   );

@@ -1,0 +1,93 @@
+{
+  "host": {
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.36",
+    "python": "3.11.16",
+    "cpu_count": 12,
+    "threads_configured": "6"
+  },
+  "torch_version": "2.14.0+cu130",
+  "cuda_available": false,
+  "laya_version": "0.3.20",
+  "load_seconds": 5.46,
+  "threads_applied": 6,
+  "sizes": [
+    {
+      "clauses": 25,
+      "attempt": 1,
+      "batch_size": 8,
+      "results": 25,
+      "total_seconds": 66.17,
+      "ms_per_clause": 2646.6,
+      "clauses_per_second": 0.378,
+      "cpu_percent_peak": 601.2,
+      "cpu_percent_mean": 586.1,
+      "rss_mb_peak": 2965.2,
+      "rss_mb_mean": 2758.0,
+      "samples": 132
+    }
+  ],
+  "thread_sweep": [
+    {
+      "threads": 1,
+      "load_seconds": 5.33,
+      "total_seconds": 135.96,
+      "ms_per_clause": 8497.3
+    },
+    {
+      "threads": 2,
+      "load_seconds": 1.27,
+      "total_seconds": 75.59,
+      "ms_per_clause": 4724.2
+    },
+    {
+      "threads": 4,
+      "load_seconds": 0.89,
+      "total_seconds": 58.56,
+      "ms_per_clause": 3660.1
+    },
+    {
+      "threads": 8,
+      "load_seconds": 0.8,
+      "total_seconds": 45.89,
+      "ms_per_clause": 2868.1
+    }
+  ],
+  "concurrency": [
+    {
+      "workers": 1,
+      "clauses": 16,
+      "wall_seconds": 49.63,
+      "aggregate_clauses_per_second": 0.322,
+      "slowest_worker_seconds": 49.63,
+      "cpu_percent_peak": 605.1,
+      "cpu_percent_mean": 587.4,
+      "rss_mb_peak": 3071.1,
+      "rss_mb_mean": 2900.7,
+      "samples": 99
+    },
+    {
+      "workers": 2,
+      "clauses": 16,
+      "wall_seconds": 38.34,
+      "aggregate_clauses_per_second": 0.417,
+      "slowest_worker_seconds": 38.33,
+      "cpu_percent_peak": 1106.7,
+      "cpu_percent_mean": 962.4,
+      "rss_mb_peak": 3561.4,
+      "rss_mb_mean": 3305.9,
+      "samples": 76
+    },
+    {
+      "workers": 4,
+      "clauses": 16,
+      "wall_seconds": 38.14,
+      "aggregate_clauses_per_second": 0.42,
+      "slowest_worker_seconds": 38.13,
+      "cpu_percent_peak": 1138.6,
+      "cpu_percent_mean": 1055.9,
+      "rss_mb_peak": 3629.2,
+      "rss_mb_mean": 3460.2,
+      "samples": 75
+    }
+  ]
+}

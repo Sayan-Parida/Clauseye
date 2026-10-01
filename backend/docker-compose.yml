@@ -1,0 +1,140 @@
+# Clauseye local stack: frontend, Go API, and the Laya inference service.
+#
+# Three services, one network. The important topology rule is that the laya
+# service is NOT published to the host: it has no rate limiting, no cost control,
+# and will consume every core it is given. Publishing 8000 would put an
+# unauthenticated, unthrottled model server on the machine's network.
+#
+#   browser -> frontend :3000  (dev server)
+#   browser -> backend :8080  (the only public entry point)
+#   backend -> laya    :8000  (internal only)
+#
+# Contract text goes browser -> backend -> laya and stops there. Nothing reaches
+# a third party.
+#
+# Usage:
+#   docker compose up --build
+#   docker compose --profile bench run --rm bench
+#
+# First start downloads the ~842 MB checkpoint into the laya-hf-cache volume,
+# which takes a few minutes. The backend waits for the readiness probe, so it
+# returns 503 until the model is resident rather than failing requests.
+
+name: clauseye
+
+services:
+  # ---------------------------------------------------------------- inference
+  laya:
+    build:
+      context: .
+      dockerfile: Dockerfile.laya
+    # Deliberately no `ports:`. Reachable only from this network.
+    expose:
+      - "8000"
+    environment:
+      LAYA_MODEL: ${LAYA_MODEL:-english}
+      LAYA_MODEL_PATH: ${LAYA_MODEL_PATH:-}
+      LAYA_DEVICE: ${LAYA_DEVICE:-cpu}
+      LAYA_BATCH_SIZE: ${LAYA_BATCH_SIZE:-8}
+      LAYA_MAX_STATES: ${LAYA_MAX_STATES:-50}
+      LAYA_MAX_STATE_CHARS: ${LAYA_MAX_STATE_CHARS:-2400}
+      # Caps torch intra-op threads. Set to the physical core count, not the
+      # logical one; see docs/benchmark.md for why this barely moves the needle
+      # on CPU.
+      LAYA_THREADS: ${LAYA_THREADS:-4}
+      LAYA_API_KEY: ${LAYA_API_KEY:-change-me-in-production}
+      LAYA_PRELOAD: "1"
+      HF_HOME: /home/laya/.cache/huggingface
+    volumes:
+      - laya-hf-cache:/home/laya/.cache/huggingface
+    healthcheck:
+      # /ready, not /health: it reports 503 until the checkpoint is resident,
+      # which is exactly the condition the backend must not route to.
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/ready', timeout=5).status==200 else 1)"]
+      interval: 10s
+      timeout: 8s
+      # Generous: the first start downloads and builds the checkpoint.
+      start_period: 600s
+      retries: 5
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          # The checkpoint alone is ~842 MB; torch adds a few hundred MB.
+          memory: 4G
+
+  # ------------------------------------------------------------------- backend
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: "8080"
+      RISK_ENGINE: ${RISK_ENGINE:-laya}
+      LAYA_URL: http://laya:8000/analyze-batch
+      LAYA_API_KEY: ${LAYA_API_KEY:-change-me-in-production}
+      LAYA_BATCH_CLAUSES: ${LAYA_BATCH_CLAUSES:-25}
+      LAYA_ATTEMPTS: "2"
+      LAYA_TIMEOUT: ${LAYA_TIMEOUT:-15m}
+      RISK_AGGREGATOR: ${RISK_AGGREGATOR:-noisy-or-floored-v1}
+      MAX_CLAUSES: ${MAX_CLAUSES:-200}
+      WINDOW_CHARS: ${WINDOW_CHARS:-2000}
+      # Fail closed: with this unset, browser requests from another origin are
+      # rejected. For local development, set it to http://localhost:3000.
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000}
+      RISK_BREAKER_THRESHOLD: "5"
+      RISK_BREAKER_COOLDOWN: "60s"
+    depends_on:
+      laya:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "/app/clauseye-backend", "-healthcheck"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  # ----------------------------------------------------------------- frontend
+  frontend:
+    image: oven/bun:1-alpine
+    working_dir: /app
+    # The VITE_ value is inlined into the bundle at build time, so it has to be
+    # set for `bun run dev`, not injected at runtime.
+    environment:
+      VITE_ANALYZE_API_URL: ${VITE_ANALYZE_API_URL:-http://localhost:8080/analyze}
+    command: sh -c "bun install --frozen-lockfile && bun run dev --host 0.0.0.0 --port 3000"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../frontend:/app
+      - frontend-node-modules:/app/node_modules
+    depends_on:
+      - backend
+
+  # ---------------------------------------------------------------- benchmark
+  # Behind a profile so it does not start with the stack. Run with:
+  #   docker compose --profile bench run --rm bench --sizes 25,50,100
+  #
+  # entrypoint rather than command, so arguments passed to `compose run` are
+  # appended to the script instead of replacing it.
+  bench:
+    build:
+      context: .
+      dockerfile: Dockerfile.laya
+    profiles: ["bench"]
+    environment:
+      LAYA_MODEL: ${LAYA_MODEL:-english}
+      LAYA_DEVICE: ${LAYA_DEVICE:-cpu}
+      LAYA_THREADS: ${LAYA_THREADS:-4}
+      HF_HOME: /home/laya/.cache/huggingface
+    volumes:
+      - laya-hf-cache:/home/laya/.cache/huggingface
+      # So results can be written back into the repository.
+      - ./testdata:/app/testdata
+    entrypoint: ["python", "scripts/benchmark_laya.py"]
+
+volumes:
+  laya-hf-cache:
+  frontend-node-modules:

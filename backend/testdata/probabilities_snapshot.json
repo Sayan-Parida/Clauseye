@@ -1,0 +1,635 @@
+{
+  "model": "english",
+  "question_set": "default",
+  "detect_threshold": 0.6,
+  "clear_threshold": 0.4,
+  "load_seconds": 7.81,
+  "clauses": {
+    "indemnity-unlimited": {
+      "probabilities": {
+        "limitation_of_liability": 0.5592,
+        "uncapped_liability": 0.7836,
+        "indemnification": 0.9766,
+        "one_sided_indemnity": 0.0472,
+        "termination_right": 0.4927,
+        "unilateral_termination": 0.1535,
+        "auto_renewal": 0.3732,
+        "jurisdiction_related": 0.2007,
+        "unusual_obligation": 0.1021
+      },
+      "expect": [
+        "indemnification",
+        "one_sided_indemnity",
+        "unusual_obligation"
+      ],
+      "expect_absent": [
+        "limitation_of_liability"
+      ]
+    },
+    "indemnity-capped-mutual": {
+      "probabilities": {
+        "limitation_of_liability": 0.8637,
+        "uncapped_liability": 0.329,
+        "indemnification": 0.9549,
+        "one_sided_indemnity": 0.1645,
+        "termination_right": 0.0939,
+        "unilateral_termination": 0.2057,
+        "auto_renewal": 0.4968,
+        "jurisdiction_related": 0.1145,
+        "unusual_obligation": 0.243
+      },
+      "expect": [
+        "indemnification",
+        "limitation_of_liability"
+      ],
+      "expect_absent": [
+        "unilateral_termination",
+        "auto_renewal"
+      ]
+    },
+    "unilateral-termination": {
+      "probabilities": {
+        "limitation_of_liability": 0.1366,
+        "uncapped_liability": 0.337,
+        "indemnification": 0.1653,
+        "one_sided_indemnity": 0.2798,
+        "termination_right": 0.9221,
+        "unilateral_termination": 0.6599,
+        "auto_renewal": 0.1074,
+        "jurisdiction_related": 0.0771,
+        "unusual_obligation": 0.185
+      },
+      "expect": [
+        "termination_right",
+        "unilateral_termination",
+        "unusual_obligation"
+      ],
+      "expect_absent": [
+        "auto_renewal"
+      ]
+    },
+    "mutual-termination-breach": {
+      "probabilities": {
+        "limitation_of_liability": 0.3429,
+        "uncapped_liability": 0.4106,
+        "indemnification": 0.232,
+        "one_sided_indemnity": 0.3503,
+        "termination_right": 0.8778,
+        "unilateral_termination": 0.5546,
+        "auto_renewal": 0.0732,
+        "jurisdiction_related": 0.0609,
+        "unusual_obligation": 0.1602
+      },
+      "expect": [
+        "termination_right"
+      ],
+      "expect_absent": [
+        "unilateral_termination",
+        "auto_renewal"
+      ]
+    },
+    "auto-renewal-notice-window": {
+      "probabilities": {
+        "limitation_of_liability": 0.2139,
+        "uncapped_liability": 0.4143,
+        "indemnification": 0.1361,
+        "one_sided_indemnity": 0.315,
+        "termination_right": 0.7871,
+        "unilateral_termination": 0.5372,
+        "auto_renewal": 1.0,
+        "jurisdiction_related": 0.0724,
+        "unusual_obligation": 0.2937
+      },
+      "expect": [
+        "auto_renewal"
+      ],
+      "expect_absent": [
+        "termination_right",
+        "unilateral_termination"
+      ]
+    },
+    "evergreen-no-exit": {
+      "probabilities": {
+        "limitation_of_liability": 0.1784,
+        "uncapped_liability": 0.5818,
+        "indemnification": 0.2129,
+        "one_sided_indemnity": 0.1258,
+        "termination_right": 0.6635,
+        "unilateral_termination": 0.3821,
+        "auto_renewal": 0.7456,
+        "jurisdiction_related": 0.0224,
+        "unusual_obligation": 0.1216
+      },
+      "expect": [
+        "auto_renewal",
+        "unusual_obligation"
+      ],
+      "expect_absent": [
+        "termination_right"
+      ]
+    },
+    "jurisdiction-standard": {
+      "probabilities": {
+        "limitation_of_liability": 0.472,
+        "uncapped_liability": 0.5314,
+        "indemnification": 0.073,
+        "one_sided_indemnity": 0.6107,
+        "termination_right": 0.2824,
+        "unilateral_termination": 0.473,
+        "auto_renewal": 0.0469,
+        "jurisdiction_related": 0.9439,
+        "unusual_obligation": 0.4641
+      },
+      "expect": [
+        "jurisdiction_related"
+      ],
+      "expect_absent": [
+        "unilateral_termination",
+        "uncapped_liability"
+      ]
+    },
+    "liability-cap-consequential": {
+      "probabilities": {
+        "limitation_of_liability": 0.9534,
+        "uncapped_liability": 0.2766,
+        "indemnification": 0.2726,
+        "one_sided_indemnity": 0.1721,
+        "termination_right": 0.1892,
+        "unilateral_termination": 0.2709,
+        "auto_renewal": 0.3997,
+        "jurisdiction_related": 0.1657,
+        "unusual_obligation": 0.2129
+      },
+      "expect": [
+        "limitation_of_liability"
+      ],
+      "expect_absent": [
+        "uncapped_liability",
+        "indemnification"
+      ]
+    },
+    "unlimited-scope": {
+      "probabilities": {
+        "limitation_of_liability": 0.243,
+        "uncapped_liability": 1.0,
+        "indemnification": 1.0,
+        "one_sided_indemnity": 0.1365,
+        "termination_right": 0.3595,
+        "unilateral_termination": 0.4713,
+        "auto_renewal": 0.5429,
+        "jurisdiction_related": 0.0725,
+        "unusual_obligation": 0.4014
+      },
+      "expect": [
+        "indemnification",
+        "one_sided_indemnity",
+        "uncapped_liability",
+        "unusual_obligation"
+      ],
+      "expect_absent": [
+        "limitation_of_liability"
+      ]
+    },
+    "liability-unlimited-plain": {
+      "probabilities": {
+        "limitation_of_liability": 0.15,
+        "uncapped_liability": 0.9991,
+        "indemnification": 0.7811,
+        "one_sided_indemnity": 0.3344,
+        "termination_right": 0.4483,
+        "unilateral_termination": 0.5123,
+        "auto_renewal": 0.4761,
+        "jurisdiction_related": 0.1321,
+        "unusual_obligation": 0.6991
+      },
+      "expect": [
+        "uncapped_liability",
+        "unusual_obligation"
+      ],
+      "expect_absent": [
+        "limitation_of_liability"
+      ]
+    },
+    "payment-terms-benign": {
+      "probabilities": {
+        "limitation_of_liability": 0.4713,
+        "uncapped_liability": 0.1835,
+        "indemnification": 0.2675,
+        "one_sided_indemnity": 0.3653,
+        "termination_right": 0.2029,
+        "unilateral_termination": 0.2711,
+        "auto_renewal": 0.2105,
+        "jurisdiction_related": 0.0645,
+        "unusual_obligation": 0.4177
+      },
+      "expect": [],
+      "expect_absent": [
+        "termination_right",
+        "unilateral_termination",
+        "auto_renewal",
+        "indemnification",
+        "one_sided_indemnity",
+        "uncapped_liability"
+      ]
+    },
+    "confidentiality-benign": {
+      "probabilities": {
+        "limitation_of_liability": 0.3061,
+        "uncapped_liability": 0.3348,
+        "indemnification": 0.4304,
+        "one_sided_indemnity": 0.1452,
+        "termination_right": 0.2324,
+        "unilateral_termination": 0.3532,
+        "auto_renewal": 0.1882,
+        "jurisdiction_related": 0.0744,
+        "unusual_obligation": 0.2684
+      },
+      "expect": [],
+      "expect_absent": [
+        "unilateral_termination",
+        "indemnification",
+        "unusual_obligation"
+      ]
+    },
+    "governing-law-foreign": {
+      "probabilities": {
+        "limitation_of_liability": 0.2446,
+        "uncapped_liability": 0.4167,
+        "indemnification": 0.0971,
+        "one_sided_indemnity": 0.2887,
+        "termination_right": 0.2832,
+        "unilateral_termination": 0.3902,
+        "auto_renewal": 0.3019,
+        "jurisdiction_related": 0.8584,
+        "unusual_obligation": 0.2243
+      },
+      "expect": [
+        "jurisdiction_related"
+      ],
+      "expect_absent": [
+        "unilateral_termination"
+      ]
+    },
+    "termination-convenience-customer": {
+      "probabilities": {
+        "limitation_of_liability": 0.3939,
+        "uncapped_liability": 0.3788,
+        "indemnification": 0.1393,
+        "one_sided_indemnity": 0.4832,
+        "termination_right": 0.8395,
+        "unilateral_termination": 0.5858,
+        "auto_renewal": 0.1512,
+        "jurisdiction_related": 0.0742,
+        "unusual_obligation": 0.2514
+      },
+      "expect": [
+        "termination_right"
+      ],
+      "expect_absent": [
+        "unilateral_termination"
+      ]
+    },
+    "warranty-asymmetry": {
+      "probabilities": {
+        "limitation_of_liability": 0.5688,
+        "uncapped_liability": 0.3186,
+        "indemnification": 0.4535,
+        "one_sided_indemnity": 0.5159,
+        "termination_right": 0.3715,
+        "unilateral_termination": 0.5348,
+        "auto_renewal": 0.4012,
+        "jurisdiction_related": 0.0522,
+        "unusual_obligation": 0.4191
+      },
+      "expect": [
+        "limitation_of_liability"
+      ],
+      "expect_absent": [
+        "termination_right",
+        "indemnification"
+      ]
+    },
+    "indemnity-defence-costs": {
+      "probabilities": {
+        "limitation_of_liability": 0.4557,
+        "uncapped_liability": 0.5237,
+        "indemnification": 0.8576,
+        "one_sided_indemnity": 0.6189,
+        "termination_right": 0.1549,
+        "unilateral_termination": 0.4572,
+        "auto_renewal": 0.2389,
+        "jurisdiction_related": 0.0847,
+        "unusual_obligation": 0.3179
+      },
+      "expect": [
+        "indemnification",
+        "one_sided_indemnity"
+      ],
+      "expect_absent": [
+        "unilateral_termination",
+        "auto_renewal"
+      ]
+    },
+    "termination-immediate-breach": {
+      "probabilities": {
+        "limitation_of_liability": 0.1947,
+        "uncapped_liability": 0.5399,
+        "indemnification": 0.2345,
+        "one_sided_indemnity": 0.3862,
+        "termination_right": 0.9177,
+        "unilateral_termination": 0.4924,
+        "auto_renewal": 0.1319,
+        "jurisdiction_related": 0.0615,
+        "unusual_obligation": 0.22
+      },
+      "expect": [
+        "termination_right"
+      ],
+      "expect_absent": [
+        "unilateral_termination"
+      ]
+    },
+    "definitions-boilerplate": {
+      "probabilities": {
+        "limitation_of_liability": 0.1192,
+        "uncapped_liability": 0.3565,
+        "indemnification": 0.1084,
+        "one_sided_indemnity": 0.3111,
+        "termination_right": 0.0861,
+        "unilateral_termination": 0.4966,
+        "auto_renewal": 0.1169,
+        "jurisdiction_related": 0.0705,
+        "unusual_obligation": 0.1609
+      },
+      "expect": [],
+      "expect_absent": [
+        "unilateral_termination",
+        "auto_renewal",
+        "indemnification",
+        "uncapped_liability"
+      ]
+    },
+    "assignment-one-sided": {
+      "probabilities": {
+        "limitation_of_liability": 0.5151,
+        "uncapped_liability": 0.3121,
+        "indemnification": 0.1787,
+        "one_sided_indemnity": 0.1494,
+        "termination_right": 0.305,
+        "unilateral_termination": 0.1837,
+        "auto_renewal": 0.1867,
+        "jurisdiction_related": 0.0455,
+        "unusual_obligation": 0.2481
+      },
+      "expect": [],
+      "expect_absent": [
+        "unilateral_termination",
+        "indemnification"
+      ]
+    },
+    "audit-one-sided": {
+      "probabilities": {
+        "limitation_of_liability": 0.2417,
+        "uncapped_liability": 0.3081,
+        "indemnification": 0.2711,
+        "one_sided_indemnity": 0.1474,
+        "termination_right": 0.1751,
+        "unilateral_termination": 0.2478,
+        "auto_renewal": 0.1148,
+        "jurisdiction_related": 0.0654,
+        "unusual_obligation": 0.1937
+      },
+      "expect": [
+        "unusual_obligation"
+      ],
+      "expect_absent": [
+        "termination_right",
+        "auto_renewal"
+      ]
+    },
+    "liability-cap-asymmetric": {
+      "probabilities": {
+        "limitation_of_liability": 0.5032,
+        "uncapped_liability": 0.8768,
+        "indemnification": 0.4839,
+        "one_sided_indemnity": 0.2703,
+        "termination_right": 0.1169,
+        "unilateral_termination": 0.2901,
+        "auto_renewal": 0.3764,
+        "jurisdiction_related": 0.0824,
+        "unusual_obligation": 0.3634
+      },
+      "expect": [
+        "limitation_of_liability",
+        "uncapped_liability"
+      ],
+      "expect_absent": [
+        "indemnification",
+        "termination_right"
+      ]
+    },
+    "renewal-long-notice": {
+      "probabilities": {
+        "limitation_of_liability": 0.4954,
+        "uncapped_liability": 0.4431,
+        "indemnification": 0.2246,
+        "one_sided_indemnity": 0.1681,
+        "termination_right": 0.8124,
+        "unilateral_termination": 0.4224,
+        "auto_renewal": 0.9718,
+        "jurisdiction_related": 0.1774,
+        "unusual_obligation": 0.2165
+      },
+      "expect": [
+        "auto_renewal"
+      ],
+      "expect_absent": [
+        "termination_right",
+        "unilateral_termination"
+      ]
+    },
+    "liability-reasonable-care": {
+      "probabilities": {
+        "limitation_of_liability": 0.5618,
+        "uncapped_liability": 0.2539,
+        "indemnification": 0.611,
+        "one_sided_indemnity": 0.1415,
+        "termination_right": 0.143,
+        "unilateral_termination": 0.2804,
+        "auto_renewal": 0.1255,
+        "jurisdiction_related": 0.4247,
+        "unusual_obligation": 0.1648
+      },
+      "expect": [
+        "limitation_of_liability"
+      ],
+      "expect_absent": [
+        "uncapped_liability",
+        "indemnification",
+        "unilateral_termination"
+      ]
+    },
+    "termination-for-insolvency": {
+      "probabilities": {
+        "limitation_of_liability": 0.1406,
+        "uncapped_liability": 0.2482,
+        "indemnification": 0.1832,
+        "one_sided_indemnity": 0.3295,
+        "termination_right": 0.8937,
+        "unilateral_termination": 0.3942,
+        "auto_renewal": 0.1012,
+        "jurisdiction_related": 0.0663,
+        "unusual_obligation": 0.148
+      },
+      "expect": [
+        "termination_right"
+      ],
+      "expect_absent": [
+        "unilateral_termination",
+        "auto_renewal"
+      ]
+    },
+    "best-endeavours": {
+      "probabilities": {
+        "limitation_of_liability": 0.559,
+        "uncapped_liability": 0.5877,
+        "indemnification": 0.3304,
+        "one_sided_indemnity": 0.1776,
+        "termination_right": 0.1762,
+        "unilateral_termination": 0.3956,
+        "auto_renewal": 0.3722,
+        "jurisdiction_related": 0.2023,
+        "unusual_obligation": 0.1254
+      },
+      "expect": [
+        "unusual_obligation"
+      ],
+      "expect_absent": [
+        "termination_right",
+        "indemnification",
+        "uncapped_liability"
+      ]
+    },
+    "liability-excluded-loss": {
+      "probabilities": {
+        "limitation_of_liability": 0.9678,
+        "uncapped_liability": 0.7623,
+        "indemnification": 0.2206,
+        "one_sided_indemnity": 0.3848,
+        "termination_right": 0.5896,
+        "unilateral_termination": 0.4752,
+        "auto_renewal": 0.2455,
+        "jurisdiction_related": 0.105,
+        "unusual_obligation": 0.2825
+      },
+      "expect": [
+        "limitation_of_liability"
+      ],
+      "expect_absent": [
+        "unilateral_termination",
+        "indemnification"
+      ]
+    },
+    "termination-discretion": {
+      "probabilities": {
+        "limitation_of_liability": 0.3348,
+        "uncapped_liability": 0.3097,
+        "indemnification": 0.1565,
+        "one_sided_indemnity": 0.5627,
+        "termination_right": 0.9118,
+        "unilateral_termination": 0.8978,
+        "auto_renewal": 0.1542,
+        "jurisdiction_related": 0.0777,
+        "unusual_obligation": 0.6778
+      },
+      "expect": [
+        "termination_right",
+        "unilateral_termination",
+        "unusual_obligation"
+      ],
+      "expect_absent": [
+        "auto_renewal"
+      ]
+    },
+    "indemnity-reciprocal": {
+      "probabilities": {
+        "limitation_of_liability": 0.8303,
+        "uncapped_liability": 0.4911,
+        "indemnification": 0.8862,
+        "one_sided_indemnity": 0.1846,
+        "termination_right": 0.1941,
+        "unilateral_termination": 0.2685,
+        "auto_renewal": 0.3273,
+        "jurisdiction_related": 0.0866,
+        "unusual_obligation": 0.1968
+      },
+      "expect": [
+        "indemnification",
+        "limitation_of_liability"
+      ],
+      "expect_absent": [
+        "unilateral_termination",
+        "auto_renewal"
+      ]
+    },
+    "force-majeure": {
+      "probabilities": {
+        "limitation_of_liability": 0.8773,
+        "uncapped_liability": 0.4241,
+        "indemnification": 0.2626,
+        "one_sided_indemnity": 0.08,
+        "termination_right": 0.1784,
+        "unilateral_termination": 0.293,
+        "auto_renewal": 0.0638,
+        "jurisdiction_related": 0.1505,
+        "unusual_obligation": 0.1449
+      },
+      "expect": [],
+      "expect_absent": [
+        "unilateral_termination",
+        "unusual_obligation",
+        "indemnification"
+      ]
+    },
+    "renewal-opt-in": {
+      "probabilities": {
+        "limitation_of_liability": 0.36,
+        "uncapped_liability": 0.3737,
+        "indemnification": 0.166,
+        "one_sided_indemnity": 0.2145,
+        "termination_right": 0.2403,
+        "unilateral_termination": 0.3807,
+        "auto_renewal": 0.2185,
+        "jurisdiction_related": 0.0745,
+        "unusual_obligation": 0.1349
+      },
+      "expect": [],
+      "expect_absent": [
+        "auto_renewal",
+        "unilateral_termination",
+        "indemnification"
+      ]
+    },
+    "liability-multiple-caps": {
+      "probabilities": {
+        "limitation_of_liability": 0.8601,
+        "uncapped_liability": 0.6317,
+        "indemnification": 0.555,
+        "one_sided_indemnity": 0.5154,
+        "termination_right": 0.4586,
+        "unilateral_termination": 0.4991,
+        "auto_renewal": 0.2759,
+        "jurisdiction_related": 0.1304,
+        "unusual_obligation": 0.5276
+      },
+      "expect": [
+        "limitation_of_liability",
+        "uncapped_liability"
+      ],
+      "expect_absent": [
+        "indemnification",
+        "termination_right"
+      ]
+    }
+  }
+}

@@ -1,8 +1,27 @@
 .env
 *.env
-*.exe
 .DS_Store
 .zed/
+
+# The Python virtualenv and the model cache. Both are enormous (the checkpoint
+# alone is ~842 MB) and neither belongs in version control.
+.venv-laya/
+.venv/
+__pycache__/
+*.py[cod]
+*.safetensors
+
+# Compiled binaries
+*.exe
+
+# Frontend
 frontend/node_modules/
 frontend/dist/
+frontend/.output/
+frontend/.wrangler/
+frontend/.tanstack/
 frontend/.lovable/
+
+# Local benchmark output. Committed deliberately when a measurement is being
+# recorded; ignored when it is scratch.
+backend/testdata/benchmark_*.json.tmp

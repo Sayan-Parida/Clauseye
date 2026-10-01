@@ -1,0 +1,21 @@
+# Cloudflare Pages / Workers response headers.
+#
+# Served by the Worker, so they apply to every route and to the SSR HTML as well
+# as the static assets. Previously this file only set a cache rule, which left
+# the app with no framing, transport or referrer protection at all.
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: no-referrer
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  Cross-Origin-Opener-Policy: same-origin
+
+  # The app loads Google Fonts, pdf.js's worker is a same-origin module, and the
+  # analysis call is a direct fetch to the backend origin. Nothing else needs to
+  # execute or connect, so the policy stays tight rather than using wildcards.
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://clauseye-backend-app.azurewebsites.net http://localhost:8080; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+
+/assets/*
+  cache-control: public, max-age=31536000, immutable

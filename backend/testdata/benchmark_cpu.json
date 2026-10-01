@@ -1,0 +1,84 @@
+{
+  "host": {
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.36",
+    "python": "3.11.16",
+    "cpu_count": 12,
+    "threads_configured": "6"
+  },
+  "torch_version": "2.14.0+cu130",
+  "cuda_available": false,
+  "laya_version": "0.3.20",
+  "load_seconds": 42.69,
+  "threads_applied": 6,
+  "sizes": [
+    {
+      "clauses": 25,
+      "attempt": 1,
+      "batch_size": 8,
+      "results": 25,
+      "total_seconds": 64.73,
+      "ms_per_clause": 2589.2,
+      "clauses_per_second": 0.386,
+      "cpu_percent_peak": 602.8,
+      "cpu_percent_mean": 591.5,
+      "rss_mb_peak": 2978.7,
+      "rss_mb_mean": 2768.7,
+      "samples": 129
+    },
+    {
+      "clauses": 50,
+      "attempt": 1,
+      "batch_size": 8,
+      "results": 50,
+      "total_seconds": 131.37,
+      "ms_per_clause": 2627.4,
+      "clauses_per_second": 0.381,
+      "cpu_percent_peak": 605.1,
+      "cpu_percent_mean": 590.5,
+      "rss_mb_peak": 2983.5,
+      "rss_mb_mean": 2792.8,
+      "samples": 262
+    },
+    {
+      "clauses": 100,
+      "attempt": 1,
+      "batch_size": 8,
+      "results": 100,
+      "total_seconds": 262.39,
+      "ms_per_clause": 2623.9,
+      "clauses_per_second": 0.381,
+      "cpu_percent_peak": 605.3,
+      "cpu_percent_mean": 591.6,
+      "rss_mb_peak": 3045.7,
+      "rss_mb_mean": 2809.8,
+      "samples": 524
+    }
+  ],
+  "batch_sweep": [
+    {
+      "batch_size": 4,
+      "total_seconds": 41.61,
+      "ms_per_clause": 2600.7
+    },
+    {
+      "batch_size": 8,
+      "total_seconds": 42.65,
+      "ms_per_clause": 2665.5
+    },
+    {
+      "batch_size": 16,
+      "total_seconds": 48.47,
+      "ms_per_clause": 3029.2
+    },
+    {
+      "batch_size": 32,
+      "total_seconds": 48.3,
+      "ms_per_clause": 3018.6
+    },
+    {
+      "batch_size": 64,
+      "total_seconds": 47.21,
+      "ms_per_clause": 2950.8
+    }
+  ]
+}

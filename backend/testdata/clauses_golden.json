@@ -1,0 +1,276 @@
+{
+  "$comment": [
+    "GOLDEN SET -- LABELS ARE PROVISIONAL AND NOT YET INDEPENDENTLY REVIEWED.",
+    "",
+    "These expected categories were written by the author of the system, not by a",
+    "second lawyer, and they have not been adjudicated. They exist to make the",
+    "aggregation falsifiable and to give scripts/validate_taxonomy.py something to",
+    "measure against. They are NOT ground truth, and any precision or recall figure",
+    "computed against them measures agreement with this author's reading, which is",
+    "an upper bound on the system's accuracy and not a validation of it.",
+    "",
+    "Before these numbers are quoted to anyone as evidence the system works, each",
+    "label needs review by a qualified lawyer who did not write the system, and the",
+    "set needs to grow well past 30 clauses. A 30-clause set cannot support the",
+    "conclusions it looks like it supports.",
+    "",
+    "Field meanings:",
+    "  id             stable identifier",
+    "  clause         the text analysed (clause numbering deliberately included,",
+    "                 so numbering removal is exercised)",
+    "  expect         category ids expected to be DETECTED at RISK_DETECT_THRESHOLD",
+    "  expect_absent  category ids expected to stay CLEAR at RISK_CLEAR_THRESHOLD",
+    "  expect_level   expected risk_level, 'any' to skip the level assertion",
+    "  note           why this clause is in the set"
+  ],
+  "calibration_status": "provisional-unvalidated",
+  "clauses": [
+    {
+      "id": "indemnity-unlimited",
+      "clause": "7. The Supplier shall indemnify, defend and hold harmless the Customer against all claims, losses and expenses howsoever arising, without limitation as to amount.",
+      "expect": ["indemnification", "one_sided_indemnity", "unusual_obligation"],
+      "expect_absent": ["limitation_of_liability"],
+      "expect_level": "high",
+      "note": "Textbook one-sided, uncapped indemnity. The clearest positive example in the set."
+    },
+    {
+      "id": "indemnity-capped-mutual",
+      "clause": "8. Each party shall indemnify the other against third-party claims arising from its breach of this Agreement, provided that each party's aggregate liability under this clause shall not exceed the fees paid in the preceding twelve months.",
+      "expect": ["indemnification", "limitation_of_liability"],
+      "expect_absent": ["unilateral_termination", "auto_renewal"],
+      "expect_level": "low",
+      "note": "Balanced indemnity with a cap. Should score low; the cap must damp the indemnity group."
+    },
+    {
+      "id": "unilateral-termination",
+      "clause": "12. The Company may terminate this Agreement at any time and without notice, in its sole discretion, for convenience or otherwise.",
+      "expect": ["termination_right", "unilateral_termination", "unusual_obligation"],
+      "expect_absent": ["auto_renewal"],
+      "expect_level": "medium",
+      "note": "The canonical unilateral termination clause."
+    },
+    {
+      "id": "mutual-termination-breach",
+      "clause": "13. Either party may terminate this Agreement by written notice if the other party commits a material breach and fails to remedy that breach within thirty days of notice.",
+      "expect": ["termination_right"],
+      "expect_absent": ["unilateral_termination", "auto_renewal"],
+      "expect_level": "low",
+      "note": "Termination exists but is mutual and conditioned on an unremedied breach. Tests that a termination right alone is not a hazard."
+    },
+    {
+      "id": "auto-renewal-notice-window",
+      "clause": "14. This Agreement shall automatically renew for successive one-year terms unless either party gives written notice of non-renewal at least sixty days before the end of the then-current term.",
+      "expect": ["auto_renewal"],
+      "expect_absent": ["termination_right", "unilateral_termination"],
+      "expect_level": "medium",
+      "note": "Auto-renewal with a genuine notice window."
+    },
+    {
+      "id": "evergreen-no-exit",
+      "clause": "15. The subscription is an evergreen commitment and continues indefinitely unless cancelled, and cancellation takes effect only at the end of the then current billing period.",
+      "expect": ["auto_renewal", "unusual_obligation"],
+      "expect_absent": ["termination_right"],
+      "expect_level": "medium",
+      "note": "Evergreen language with an effective exit delay."
+    },
+    {
+      "id": "jurisdiction-standard",
+      "clause": "16. This Agreement shall be governed by the laws of England and Wales, and the courts of England and Wales shall have exclusive jurisdiction over any dispute arising out of or in connection with this Agreement.",
+      "expect": ["jurisdiction_related"],
+      "expect_absent": ["unilateral_termination", "uncapped_liability"],
+      "expect_level": "low",
+      "note": "Domestic, standard jurisdiction clause. jurisdiction_related fires because the category is 'this clause concerns jurisdiction', not because it is a hazard -- which is why the weight is only 0.05."
+    },
+    {
+      "id": "liability-cap-consequential",
+      "clause": "17. In no event shall either party be liable for any indirect, incidental or consequential damages, and each party's total liability under this Agreement shall be capped at the total fees paid in the twelve months preceding the claim.",
+      "expect": ["limitation_of_liability"],
+      "expect_absent": ["uncapped_liability", "indemnification"],
+      "expect_level": "low",
+      "note": "Strongly protective clause."
+    },
+    {
+      "id": "unlimited-scope",
+      "clause": "18. The Customer shall indemnify the Supplier against any liability, whether direct or indirect, in an unlimited amount and without any cap, in respect of all losses of whatever nature.",
+      "expect": ["indemnification", "one_sided_indemnity", "uncapped_liability", "unusual_obligation"],
+      "expect_absent": ["limitation_of_liability"],
+      "expect_level": "high",
+      "note": "Indemnity plus explicit removal of the cap."
+    },
+    {
+      "id": "liability-unlimited-plain",
+      "clause": "19. The Supplier's liability for breach of this Agreement shall be unlimited and shall not be subject to any monetary cap or ceiling.",
+      "expect": ["uncapped_liability", "unusual_obligation"],
+      "expect_absent": ["limitation_of_liability"],
+      "expect_level": "medium",
+      "note": "Uncapped liability stated directly rather than through an indemnity. uncapped_liability added to expect after the first validator run; the clause says 'unlimited and shall not be subject to any monetary cap', which is about as unambiguous as the category gets."
+    },
+    {
+      "id": "payment-terms-benign",
+      "clause": "20. The Customer shall pay all undisputed invoices within thirty days of receipt. Late payment shall accrue interest at one per cent per month.",
+      "expect": [],
+      "expect_absent": ["termination_right", "unilateral_termination", "auto_renewal", "indemnification", "one_sided_indemnity", "uncapped_liability"],
+      "expect_level": "low",
+      "note": "Ordinary commercial clause. A clean negative control: nothing here should fire."
+    },
+    {
+      "id": "confidentiality-benign",
+      "clause": "21. Each party shall keep confidential all Confidential Information of the other party and shall not disclose it to any third party except to its professional advisers.",
+      "expect": [],
+      "expect_absent": ["unilateral_termination", "indemnification", "unusual_obligation"],
+      "expect_level": "low",
+      "note": "Mutual obligation. Tests that mutual duties are not scored as one-sided."
+    },
+    {
+      "id": "governing-law-foreign",
+      "clause": "22. This Agreement shall be governed by the laws of Singapore and any dispute shall be referred to arbitration seated in Singapore, conducted in English.",
+      "expect": ["jurisdiction_related"],
+      "expect_absent": ["unilateral_termination"],
+      "expect_level": "low",
+      "note": "Foreign seat plus arbitration."
+    },
+    {
+      "id": "termination-convenience-customer",
+      "clause": "23. The Customer may terminate this Agreement for convenience at any time upon ninety days prior written notice, and the Supplier may terminate this Agreement for convenience only upon one hundred eighty days prior written notice.",
+      "expect": ["termination_right"],
+      "expect_absent": ["unilateral_termination"],
+      "expect_level": "low",
+      "note": "Asymmetric notice periods but both sides may exit. Deliberately contested: some reviewers would call the 90-vs-180 asymmetry unilateral. Recorded so the disagreement is visible rather than hidden."
+    },
+    {
+      "id": "warranty-asymmetry",
+      "clause": "24. The Supplier warrants that the Services will perform in accordance with the documentation, and the Customer's sole and exclusive remedy for any breach of this warranty shall be re-performance of the Services.",
+      "expect": ["limitation_of_liability"],
+      "expect_absent": ["termination_right", "indemnification"],
+      "expect_level": "low",
+      "note": "Sole-remedy clause caps the practical exposure of a warranty."
+    },
+    {
+      "id": "indemnity-defence-costs",
+      "clause": "25. The Customer shall defend any claim brought against the Supplier and shall indemnify the Supplier against any damages awarded, at the Customer's sole expense.",
+      "expect": ["indemnification", "one_sided_indemnity"],
+      "expect_absent": ["unilateral_termination", "auto_renewal"],
+      "expect_level": "high",
+      "note": "Defence obligation plus sole-expense phrasing, which is the strongest deterministic signal for one-sided indemnity."
+    },
+    {
+      "id": "termination-immediate-breach",
+      "clause": "26. Either party may terminate this Agreement immediately by written notice if the other party commits a material breach that is incapable of remedy.",
+      "expect": ["termination_right"],
+      "expect_absent": ["unilateral_termination"],
+      "expect_level": "low",
+      "note": "Immediate but mutual and tied to an incurable breach."
+    },
+    {
+      "id": "definitions-boilerplate",
+      "clause": "27. 'Confidential Information' means all information disclosed by one party to the other that is designated as confidential or that would reasonably be understood to be confidential.",
+      "expect": [],
+      "expect_absent": ["unilateral_termination", "auto_renewal", "indemnification", "uncapped_liability"],
+      "expect_level": "low",
+      "note": "Definition boilerplate. Legal vocabulary, no obligation."
+    },
+    {
+      "id": "assignment-one-sided",
+      "clause": "28. The Customer may not assign this Agreement without the prior written consent of the Supplier, such consent not to be unreasonably withheld.",
+      "expect": [],
+      "expect_absent": ["unilateral_termination", "indemnification"],
+      "expect_level": "low",
+      "note": "Restricted but common assignment term with a reasonableness qualifier."
+    },
+    {
+      "id": "audit-one-sided",
+      "clause": "29. The Supplier may audit the Customer's records at any time on twenty-four hours notice, and the Customer shall provide all records relating to the Services.",
+      "expect": ["unusual_obligation"],
+      "expect_absent": ["termination_right", "auto_renewal"],
+      "expect_level": "medium",
+      "note": "Genuinely one-sided operational burden. Contested whether this is market practice."
+    },
+    {
+      "id": "liability-cap-asymmetric",
+      "clause": "30. The Customer's aggregate liability under this Agreement shall be unlimited, and the Supplier's aggregate liability shall not exceed the fees paid in the preceding six months.",
+      "expect": ["limitation_of_liability", "uncapped_liability"],
+      "expect_absent": ["indemnification", "termination_right"],
+      "expect_level": "any",
+      "note": "Asymmetric caps: unlimited for the Customer, capped for the Supplier. LABEL CORRECTED after the first validator run. This entry previously asserted expect_absent=[limitation_of_liability] and expect=[indemnification], which was self-contradictory: the clause does contain 'shall not exceed', and there is no indemnity in it at all. The model was right and the label was wrong. Kept because the asymmetry is exactly the case where the liability damping rule is most questionable: a cap for one party suppresses the uncapped signal for the other."
+    },
+    {
+      "id": "renewal-long-notice",
+      "clause": "31. This Agreement shall renew automatically for successive twelve month terms unless either party gives notice of non-renewal at least one hundred and twenty days before expiry.",
+      "expect": ["auto_renewal"],
+      "expect_absent": ["termination_right", "unilateral_termination"],
+      "expect_level": "medium",
+      "note": "Longer notice window; should behave like the 60-day case."
+    },
+    {
+      "id": "liability-reasonable-care",
+      "clause": "32. Each party shall be liable for loss caused by its negligence, subject to a cap of the total charges paid under this Agreement.",
+      "expect": ["limitation_of_liability"],
+      "expect_absent": ["uncapped_liability", "indemnification", "unilateral_termination"],
+      "expect_level": "low",
+      "note": "Negligence liability with a cap."
+    },
+    {
+      "id": "termination-for-insolvency",
+      "clause": "33. Either party may terminate this Agreement immediately on notice if the other party becomes insolvent, enters administration, or has a receiver appointed over any of its assets.",
+      "expect": ["termination_right"],
+      "expect_absent": ["unilateral_termination", "auto_renewal"],
+      "expect_level": "low",
+      "note": "Mutual insolvency trigger."
+    },
+    {
+      "id": "best-endeavours",
+      "clause": "34. The Supplier shall use best endeavours to assist the Customer with any regulatory enquiry concerning the Services, at no additional charge.",
+      "expect": ["unusual_obligation"],
+      "expect_absent": ["termination_right", "indemnification", "uncapped_liability"],
+      "expect_level": "medium",
+      "note": "Best-endeavours obligation with no charge, which is outside market practice."
+    },
+    {
+      "id": "liability-excluded-loss",
+      "clause": "35. The Supplier shall have no liability to the Customer for any loss of profit, loss of business, loss of anticipated savings, or any indirect loss, howsoever arising.",
+      "expect": ["limitation_of_liability"],
+      "expect_absent": ["unilateral_termination", "indemnification"],
+      "expect_level": "low",
+      "note": "Exclusion of loss categories rather than a monetary cap."
+    },
+    {
+      "id": "termination-discretion",
+      "clause": "36. The Supplier may at any time, in its sole and absolute discretion, terminate the Customer's access to the Services without notice and without refund.",
+      "expect": ["termination_right", "unilateral_termination", "unusual_obligation"],
+      "expect_absent": ["auto_renewal"],
+      "expect_level": "medium",
+      "note": "Unilateral termination plus no-refund. Stacked risks in one clause."
+    },
+    {
+      "id": "indemnity-reciprocal",
+      "clause": "37. Each party shall indemnify the other on a reciprocal basis against claims arising from its own negligence, and no indemnity shall be owed where the claim results from the indemnified party's own act or omission.",
+      "expect": ["indemnification", "limitation_of_liability"],
+      "expect_absent": ["unilateral_termination", "auto_renewal"],
+      "expect_level": "low",
+      "note": "Explicitly reciprocal with a carve-back. The strongest possible contrast to the one-sided cases."
+    },
+    {
+      "id": "force-majeure",
+      "clause": "38. Neither party shall be liable for any failure to perform caused by an event beyond its reasonable control, provided that it notifies the other party promptly and uses reasonable endeavours to mitigate.",
+      "expect": [],
+      "expect_absent": ["unilateral_termination", "unusual_obligation", "indemnification"],
+      "expect_level": "low",
+      "note": "Mutual force majeure. Second clean negative control."
+    },
+    {
+      "id": "renewal-opt-in",
+      "clause": "39. Any renewal of this Agreement shall take effect only where both parties have agreed the renewal in writing.",
+      "expect_absent": ["auto_renewal", "unilateral_termination", "indemnification"],
+      "expect_level": "low",
+      "note": "Opt-in renewal. Mentions 'renewal' but removes the trap; tests for keyword false positives in the evidence layer."
+    },
+    {
+      "id": "liability-multiple-caps",
+      "clause": "40. The Customer's liability shall be unlimited. The Supplier's liability for breach of confidentiality shall not exceed one million pounds, and for all other claims shall not exceed the fees paid in the preceding six months.",
+      "expect": ["limitation_of_liability", "uncapped_liability"],
+      "expect_absent": ["indemnification", "termination_right"],
+      "expect_level": "any",
+      "note": "Explicitly unlimited for one party alongside two caps for the other. LABEL CORRECTED after the first validator run, on the same basis as liability-cap-asymmetric: both categories are present in this clause and the clause contains no indemnity. Expected level left 'any' because if the damping rule sees the caps and suppresses the unlimited signal, that is a false negative worth surfacing rather than averaging away."
+    }
+  ]
+}

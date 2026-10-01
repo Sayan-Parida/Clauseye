@@ -10,9 +10,15 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Clause — AI contract risk analysis" },
-      { name: "description", content: "Review contracts in seconds with AI-powered clause risk triage for legal teams." },
+      {
+        name: "description",
+        content: "Review contracts in seconds with AI-powered clause risk triage for legal teams.",
+      },
       { property: "og:title", content: "Clause — AI contract risk analysis" },
-      { property: "og:description", content: "Review contracts in seconds with AI-powered clause risk triage for legal teams." },
+      {
+        property: "og:description",
+        content: "Review contracts in seconds with AI-powered clause risk triage for legal teams.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -61,10 +67,13 @@ function Index() {
                 AI-powered clause risk triage for legal teams.
               </p>
               <Button asChild size="lg" className="mt-8 w-full sm:w-auto">
-                <Link to="/upload">Analyze a contract — free <ArrowRight /></Link>
+                <Link to="/upload">
+                  Analyze a contract — free <ArrowRight />
+                </Link>
               </Button>
               <p className="mt-5 text-xs leading-relaxed text-muted-foreground">
-                Your document never leaves your browser. Only anonymized text is analyzed.
+                Your document is opened in your browser and never uploaded. Only its text is
+                analysed, on our own infrastructure, after personal identifiers are removed.
               </p>
             </div>
           </div>
@@ -72,7 +81,10 @@ function Index() {
           <div className="mt-20 border-t border-foreground lg:mt-24">
             <div className="grid md:grid-cols-3">
               {steps.map((step, index) => (
-                <div key={step.number} className={`group flex min-h-40 items-start gap-5 py-7 md:px-7 ${index === 0 ? "md:pl-0" : "border-t border-border md:border-t-0 md:border-l"}`}>
+                <div
+                  key={step.number}
+                  className={`group flex min-h-40 items-start gap-5 py-7 md:px-7 ${index === 0 ? "md:pl-0" : "border-t border-border md:border-t-0 md:border-l"}`}
+                >
                   <step.icon className="mt-1 size-5 shrink-0" strokeWidth={1.5} />
                   <div className="flex-1">
                     <div className="flex justify-between gap-4">
@@ -91,17 +103,35 @@ function Index() {
           <div className="mx-auto grid max-w-7xl gap-10 px-5 py-16 sm:px-8 md:grid-cols-2 md:items-center md:py-20">
             <div>
               <p className="text-sm text-primary-foreground/60">Private beta</p>
-              <h2 className="mt-3 max-w-lg font-display text-4xl leading-tight sm:text-5xl">Better reviews start with better focus.</h2>
+              <h2 className="mt-3 max-w-lg font-display text-4xl leading-tight sm:text-5xl">
+                Better reviews start with better focus.
+              </h2>
             </div>
             <div className="md:justify-self-end">
               {joined ? (
-                <div className="flex items-center gap-3 text-lg"><span className="grid size-8 place-items-center rounded-full bg-accent text-accent-foreground"><Check className="size-4" /></span> You’re on the list.</div>
+                <div className="flex items-center gap-3 text-lg">
+                  <span className="grid size-8 place-items-center rounded-full bg-accent text-accent-foreground">
+                    <Check className="size-4" />
+                  </span>{" "}
+                  You’re on the list.
+                </div>
               ) : (
                 <form onSubmit={submitWaitlist} className="w-full md:w-[28rem]" noValidate>
-                  <label htmlFor="email" className="mb-3 block text-sm">Join the waitlist</label>
+                  <label htmlFor="email" className="mb-3 block text-sm">
+                    Join the waitlist
+                  </label>
                   <div className="flex flex-col gap-2 sm:flex-row">
-                    <Input id="email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@company.com" className="h-12 border-primary-foreground/35 bg-primary text-primary-foreground placeholder:text-primary-foreground/45 focus-visible:ring-primary-foreground" />
-                    <Button type="submit" variant="secondary" size="lg">Join</Button>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={email}
+                      onChange={(event) => setEmail(event.target.value)}
+                      placeholder="you@company.com"
+                      className="h-12 border-primary-foreground/35 bg-primary text-primary-foreground placeholder:text-primary-foreground/45 focus-visible:ring-primary-foreground"
+                    />
+                    <Button type="submit" variant="secondary" size="lg">
+                      Join
+                    </Button>
                   </div>
                   {error && <p className="mt-2 text-sm text-risk-critical">{error}</p>}
                 </form>

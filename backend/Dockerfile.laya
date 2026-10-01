@@ -1,3 +1,10 @@
+# CPU-only PyTorch image for the Laya inference service.
+#
+# torch resolves to the CPU build by default on linux/x86_64, so no extra index
+# is needed. A GPU image would require a CUDA base and a compatible host, which
+# is deliberately not configured here: see docs/benchmark.md for the measurements
+# that decision should be based on.
+
 FROM python:3.11-slim-bookworm
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -5,20 +12,33 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     USE_TF=0 \
     USE_TORCH=1 \
     TOKENIZERS_PARALLELISM=false \
-    LAYA_DEVICE=cpu \
-    LAYA_PRELOAD=1 \
+    LAYA_HOST=0.0.0.0 \
+    LAYA_PORT=8000 \
     HF_HOME=/home/laya/.cache/huggingface
 
+# uid/gid 10001 so the service does not run as root even if the orchestrator
+# drops its own user namespace.
 RUN groupadd --gid 10001 laya \
     && useradd --uid 10001 --gid laya --create-home laya \
     && mkdir -p /home/laya/.cache/huggingface \
     && chown -R laya:laya /home/laya/.cache
 
 WORKDIR /app
-COPY laya_requirements.txt .
+
+COPY laya_requirements.txt ./
 RUN python -m pip install --no-cache-dir -r laya_requirements.txt
-COPY laya_adapter.py .
+
+# The service, its question schema, and the scripts the bench profile runs.
+COPY laya_adapter.py laya_questions.py ./
+COPY scripts/ ./scripts/
+
+# The checkpoint is not baked in: it is ~842 MB and is mounted from the
+# laya-hf-cache volume so it is downloaded once rather than baked per build.
 
 USER laya
 EXPOSE 8000
-CMD ["uvicorn", "laya_adapter:app", "--host", "0.0.0.0", "--port", "8000"]
+
+# One worker on purpose. The forward pass is synchronous torch, and running
+# several at once on one CPU makes each of them slower while multiplying memory
+# use by the checkpoint size. Requests queue instead.
+CMD ["uvicorn", "laya_adapter:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
